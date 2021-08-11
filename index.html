@@ -210,6 +210,105 @@
       }
     })
     })
+    class Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        this.nombre=nombre;
+        this.edad=edad;
+        this.img=img;
+        this.comentarios=comentarios;
+        this.sonido=sonido;
+      }
+
+      get Nombre(){
+        return this.nombre;
+      }
+      get Edad(){
+        return this.edad;
+      }
+      get Img(){
+        return this.img;
+      }
+      set Comentarios(str_comentario){
+        this.comentarios=str_comentario;
+      }
+      get Sonido(){
+        return this.sonido;
+      }
+    }
+
+    class Leon extends Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        super(nombre,edad,img,comentarios,sonido);
+      }
+
+      Rugir(){
+        console.log('reproduciendo '+this.sonido)
+      }
+    }
+
+    class Lobo extends Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        super(nombre,edad,img,comentarios,sonido);
+      }
+
+      Aullar(){
+        console.log('reproduciendo '+this.sonido)
+      }
+    }
+
+    class Oso extends Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        super(nombre,edad,img,comentarios,sonido);
+      }
+
+      Grunnir(){
+        console.log('reproduciendo '+this.sonido)
+      }
+    }
+
+    class Serpiente extends Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        super(nombre,edad,img,comentarios,sonido);
+      }
+
+      Sisear(){
+        console.log('reproduciendo '+this.sonido)
+      }
+    }
+
+    class Aguila extends Animal{
+      constructor(nombre,edad,img,comentarios,sonido){
+        super(nombre,edad,img,comentarios,sonido);
+      }
+
+      Chillar(){
+        console.log('reproduciendo '+this.sonido)
+      }
+    }
+
+    /**
+     * Reproduce el sonido del animal
+     * @param id_animal posición del animal en el arreglo arr_animales
+     */
+    function reproducirSonido(id_animal) {
+      switch (arr_animales[id_animal].nombre){
+        case 'Leon':
+          arr_animales[id_animal].Rugir()
+          break;
+        case 'Aguila':
+          arr_animales[id_animal].Chillar()
+          break;
+        case 'Lobo':
+          arr_animales[id_animal].Aullar()
+          break;
+        case 'Oso':
+          arr_animales[id_animal].Grunnir()
+          break;
+        case 'Serpiente':
+          arr_animales[id_animal].Sisear()
+          break;
+      }
+    }
 
   </script>
   </body>
