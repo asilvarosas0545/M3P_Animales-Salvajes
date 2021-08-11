@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba - Torneo de Artes Marciales</title>
+
+    <!-- JQuery 3.6.0 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/estilos.css" />
+  </head>
+  <body>
+    <div class="row">
+      <div
+        class="col-12 card col-sm-7 text-center p-4 bg-warning shadow-lg"
+        id="Tabla"
+      >
+        <h3>Animales en investigación</h3>
+        <hr class="my-0 bg-dark w-75 mx-auto" />
+
+        <div
+          id="Animales"
+          class="my-3 p-3 d-flex align-items-start justify-content-start flex-wrap bg-dark"
+        ></div>
+      </div>
+      <div class="card col-12 col-sm-4 bg-warning text-dark offset-1 shadow-lg">
+        <div class="card-body">
+          <h5 class="card-title">Registrar animal en:</h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            Ingrese los datos del animal
+          </h6>
+          <hr />
+          <div class="card-text my-3">
+            <div class="form-group">
+              <label for="exampleInputPassword1">Nombre del animal:</label>
+              <select class="form-control bg-dark text-white" id="animal">
+                <option disabled selected>Seleccione un animal</option>
+                <option value="Leon">León</option>
+                <option value="Lobo">Lobo</option>
+                <option value="Oso">Oso</option>
+                <option value="Serpiente">Serpiente</option>
+                <option value="Aguila">Águila</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputPassword1">Años de edad estimados:</label>
+              <select class="form-control bg-dark text-white" id="edad">
+                <option disabled selected>Seleccione un rango de años</option>
+
+                <option value="0 - 1 años">0 - 1 años</option>
+                <option value="1 - 3 años">1 - 3 años</option>
+                <option value="3 - 5 años">3 - 5 años</option>
+                <option value="5 - 8 años">5 - 8 años</option>
+                <option value="8 - 10 años">8 - 10 años</option>
+                <option value="Más de 10 años">Más de 10 años</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputPassword1">Comentarios:</label>
+              <textarea
+                rows="5"
+                class="form-control shadow-lg bg-dark text-white"
+                id="comentarios"
+              ></textarea>
+            </div>
+
+            <div class="p-5 card bg-dark">
+              <div id="preview"></div>
+            </div>
+          </div>
+
+          <btn class="btn btn-light d-block" id="btnRegistrar">Agregar</btn>
+        </div>
+      </div>
+    </div>
+
+    <audio id="player" class="d-none"></audio>
+
+    <div class="modal fade" id="exampleModal">
+      <div class="modal-dialog modal-dialog-centered w-25" role="document">
+        <div class="modal-content bg-dark">
+          <div class="modal-body">...</div>
+        </div>
+      </div>
+    </div>
+<!--
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <!--<script type="module" src="assets/js/index.js"></script>-->
+  <script>
+    var arr_animales=[]
+    var data_animales
+    //CAMBIAR A JSON
+    const img_animales={
+      Leon:'Leon.png',
+      Aguila:'Aguila.png',
+      Lobo:'Lobo.jpg',
+      Oso:'Oso.jpg',
+      Serpiente:'Serpiente.jpg'
+    }
+    const mp3_animales={
+      Leon:'Rugido.mp3',
+      Aguila:'Chillido.mp3',
+      Lobo:'Aullido.mp3',
+      Oso:'Gruñido.mp3',
+      Serpiente:'Siseo.mp3'
+    }
+
+    $(document).ready(function() {
+      $.ajax({
+        type:"GET",
+        url:"animales.json",
+        dataType: 'json',
+        success: function(data) {
+           data_animales=data
+        }
+      });
+
+      /**
+       * Evento al elegir animal mostrar imagen
+       */
+      $('#animal').on('change',function () {
+        console.log(data_animales)
+        let animal=$(this).val();
+        $('#preview').html('<img src="assets/imgs/'+img_animales[animal]+'" alt="imagen_animal">');
+      })
+      /**
+       * Evento boton registrar animal
+       */
+      $('#btnRegistrar').on('click',function (){
+      let animal=$('#animal').val()
+      let edad=$('#edad').val()
+      let comentarios=$('#comentarios').val()
+      /**
+       * punto 7
+       */
+      if(comentarios == '' || edad == null || animal == null){
+        alert('Completa todos los campos')
+      }else{
+        /**
+         * Punto 2
+         */
+        switch (animal){
+          case 'Leon':
+            arr_animales.push(
+                    new Leon(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+            )
+            break;
+          case 'Aguila':
+            arr_animales.push(
+                    new Aguila(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+            )
+            break;
+          case 'Lobo':
+            arr_animales.push(
+                    new Lobo(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+            )
+            break;
+          case 'Oso':
+            arr_animales.push(
+                    new Oso(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+            )
+            break;
+          case 'Serpiente':
+            arr_animales.push(
+                    new Serpiente(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+            )
+            break;
+        }
+
+        /**
+         * Punto 8
+         * ver placeholder
+         */
+        $('#animal').val('')
+        $('#edad').val('')
+        $('#comentarios').val('')
+
+        /**
+         * Agrega el animal al listado html 'animales en investigación'
+         */
+        let posicion = arr_animales.length-1
+        $('#Animales').append(
+                '<div class="card" style="width: 18rem;">\n' +
+                '  <img class="card-img-top" src="assets/imgs/'+img_animales[animal]+'" alt="Card image cap">\n' +
+                '  <div class="card-body bg-secondary text-white">\n' +
+                '    <p class="text-white" onclick="reproducirSonido('+posicion+')">Escuchar</p>\n' +
+                '  </div>\n' +
+                '</div>')
+      }
+    })
+    })
+
+  </script>
+  </body>
+</html>
