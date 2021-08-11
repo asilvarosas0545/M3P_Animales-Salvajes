@@ -90,12 +90,7 @@
         </div>
       </div>
     </div>
-<!--
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script> -->
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -110,21 +105,6 @@
   <script>
     var arr_animales=[]
     var data_animales
-    //CAMBIAR A JSON
-    const img_animales={
-      Leon:'Leon.png',
-      Aguila:'Aguila.png',
-      Lobo:'Lobo.jpg',
-      Oso:'Oso.jpg',
-      Serpiente:'Serpiente.jpg'
-    }
-    const mp3_animales={
-      Leon:'Rugido.mp3',
-      Aguila:'Chillido.mp3',
-      Lobo:'Aullido.mp3',
-      Oso:'Gruñido.mp3',
-      Serpiente:'Siseo.mp3'
-    }
 
     $(document).ready(function() {
       $.ajax({
@@ -132,7 +112,7 @@
         url:"animales.json",
         dataType: 'json',
         success: function(data) {
-           data_animales=data
+           data_animales=data.animales
         }
       });
 
@@ -140,17 +120,23 @@
        * Evento al elegir animal mostrar imagen
        */
       $('#animal').on('change',function () {
-        console.log(data_animales)
         let animal=$(this).val();
-        $('#preview').html('<img src="assets/imgs/'+img_animales[animal]+'" alt="imagen_animal">');
+        let data_animal=data_animales.find(function (obj) {
+          return obj.name == animal
+        })
+        $('#preview').html('<img src="assets/imgs/'+data_animal.imagen+'" alt="imagen_animal">');
       })
       /**
        * Evento boton registrar animal
        */
       $('#btnRegistrar').on('click',function (){
-      let animal=$('#animal').val()
-      let edad=$('#edad').val()
-      let comentarios=$('#comentarios').val()
+      let animal        = $('#animal').val()
+      let edad          = $('#edad').val()
+      let comentarios   = $('#comentarios').val()
+
+      let data_animal=data_animales.find(function (obj) {
+        return obj.name == animal
+      })
       /**
        * punto 7
        */
@@ -163,27 +149,27 @@
         switch (animal){
           case 'Leon':
             arr_animales.push(
-                    new Leon(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+                    new Leon(animal,edad,data_animal.imagen,comentarios,data_animal.sonido)
             )
             break;
           case 'Aguila':
             arr_animales.push(
-                    new Aguila(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+                    new Aguila(animal,edad,data_animal.imagen,comentarios,data_animal.sonido)
             )
             break;
           case 'Lobo':
             arr_animales.push(
-                    new Lobo(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+                    new Lobo(animal,edad,data_animal.imagen,comentarios,data_animal.sonido)
             )
             break;
           case 'Oso':
             arr_animales.push(
-                    new Oso(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+                    new Oso(animal,edad,data_animal.imagen,comentarios,data_animal.sonido)
             )
             break;
           case 'Serpiente':
             arr_animales.push(
-                    new Serpiente(animal,edad,img_animales[animal],comentarios,mp3_animales[animal])
+                    new Serpiente(animal,edad,data_animal.imagen,comentarios,data_animal.sonido)
             )
             break;
         }
@@ -200,9 +186,12 @@
          * Agrega el animal al listado html 'animales en investigación'
          */
         let posicion = arr_animales.length-1
+        /**
+         * Punto 6
+         */
         $('#Animales').append(
                 '<div class="card" style="width: 18rem;">\n' +
-                '  <img class="card-img-top" src="assets/imgs/'+img_animales[animal]+'" alt="Card image cap">\n' +
+                '  <img class="card-img-top" src="assets/imgs/'+data_animal.imagen+'" alt="Card image cap">\n' +
                 '  <div class="card-body bg-secondary text-white">\n' +
                 '    <p class="text-white" onclick="reproducirSonido('+posicion+')">Escuchar</p>\n' +
                 '  </div>\n' +
@@ -210,6 +199,7 @@
       }
     })
     })
+
     class Animal{
       constructor(nombre,edad,img,comentarios,sonido){
         this.nombre=nombre;
@@ -242,7 +232,7 @@
       }
 
       Rugir(){
-        console.log('reproduciendo '+this.sonido)
+        InsertarSonido(this.sonido);
       }
     }
 
@@ -252,7 +242,7 @@
       }
 
       Aullar(){
-        console.log('reproduciendo '+this.sonido)
+        InsertarSonido(this.sonido);
       }
     }
 
@@ -262,7 +252,7 @@
       }
 
       Grunnir(){
-        console.log('reproduciendo '+this.sonido)
+        InsertarSonido(this.sonido);
       }
     }
 
@@ -272,7 +262,7 @@
       }
 
       Sisear(){
-        console.log('reproduciendo '+this.sonido)
+        InsertarSonido(this.sonido);
       }
     }
 
@@ -282,7 +272,7 @@
       }
 
       Chillar(){
-        console.log('reproduciendo '+this.sonido)
+        InsertarSonido(this.sonido);
       }
     }
 
@@ -308,6 +298,17 @@
           arr_animales[id_animal].Sisear()
           break;
       }
+    }
+
+    /**
+     * Inserta y reproduce el sonido pasado en el argumento
+     * Punto 9
+     * @param src_audio
+     * @constructor
+     */
+    function InsertarSonido(src_audio){
+      $('#player').attr('src','assets/sounds/'+src_audio)
+      $('#player')[0].play();
     }
 
   </script>
