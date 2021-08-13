@@ -106,16 +106,21 @@
     var arr_animales=[]
     var data_animales
 
-    $(document).ready(function() {
-      $.ajax({
-        type:"GET",
-        url:"animales.json",
-        dataType: 'json',
-        success: function(data) {
-           data_animales=data.animales
-        }
-      });
+    /**
+     * Punto 3 y 4
+     */
+    let getData=( async ()=>{
+      let url='animales.json';
+      try {
+        let respuesta= await fetch(url);
+        let data_animal=await respuesta.json();
+        data_animales=data_animal.animales
+      } catch (error) {
+        console.log(error)
+      }
+    })()
 
+    $(document).ready(function() {
       /**
        * Evento al elegir animal mostrar imagen
        */
